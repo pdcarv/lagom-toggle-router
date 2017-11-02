@@ -5,7 +5,6 @@ import akka.NotUsed;
 import com.lightbend.lagom.javadsl.api.Descriptor;
 import com.lightbend.lagom.javadsl.api.Service;
 import com.lightbend.lagom.javadsl.api.ServiceCall;
-import com.lightbend.lagom.javadsl.api.transport.Method;
 
 import static com.lightbend.lagom.javadsl.api.Service.*;
 
@@ -17,6 +16,7 @@ public interface ToggleService extends Service {
      */
     ServiceCall<NotUsed, FeatureMessage> toggle(String id, String version);
 
+
     /**
      * Create one toggle
      * Example: curl -H "Content-Type: application/json" -X POST -d '{"message":
@@ -24,6 +24,9 @@ public interface ToggleService extends Service {
      *
      */
     ServiceCall<FeatureMessage, Done> createToggle();
+
+
+    ServiceCall<NotUsed, Boolean> isEnabled(String id, String version);
 
     /**
      * This gets published to Kafka.
@@ -35,7 +38,8 @@ public interface ToggleService extends Service {
         // @formatter:off
         return named("toggle").withCalls(
                 pathCall("/api/v1/toggle/:id/version/:version",  this::toggle),
-                pathCall("/api/v1/toggle", this::createToggle)
+                pathCall("/api/v1/toggle", this::createToggle),
+                pathCall("/api/v1/toggle/:id/version/:version/enabled", this::isEnabled)
         ).withAutoAcl(true);
         // @formatter:on
     }
