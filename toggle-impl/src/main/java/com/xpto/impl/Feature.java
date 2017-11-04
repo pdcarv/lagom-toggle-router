@@ -3,10 +3,9 @@ package com.xpto.impl;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import com.lightbend.lagom.serialization.Jsonable;
 import lombok.Value;
-
-import java.time.LocalDateTime;
 
 @Value
 @JsonDeserialize
@@ -15,21 +14,18 @@ public class Feature implements Jsonable {
     private final String name;
     private final String version;
     private final String service;
-    private final Boolean permission;
+    private final Boolean serviceOnly;
     private final Boolean enabled;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
 
     @JsonCreator
-    public Feature(String id, String name, String version, String service, Boolean permission, Boolean enabled) {
+    @Inject
+    public Feature(String id, String name, String version, String service, Boolean serviceOnly, Boolean enabled) {
         this.id = Preconditions.checkNotNull(id);
         this.name = name;
         this.version = Preconditions.checkNotNull(version);
         this.service = Preconditions.checkNotNull(service);
-        this.permission = permission;
+        this.serviceOnly = serviceOnly;
         this.enabled = enabled;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 
     public Feature(String id, String version) {
@@ -37,9 +33,7 @@ public class Feature implements Jsonable {
         this.version = Preconditions.checkNotNull(version);
         this.name = "";
         this.service = "default";
-        this.permission = false;
+        this.serviceOnly = false;
         this.enabled = false;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 }

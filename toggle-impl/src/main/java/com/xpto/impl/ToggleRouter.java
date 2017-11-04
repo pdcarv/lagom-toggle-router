@@ -4,23 +4,35 @@ package com.xpto.impl;
 import com.google.inject.Singleton;
 
 import javax.inject.Inject;
+import java.util.Optional;
+
 
 @Singleton
-public class ToggleRouter {
-    private final ToggleConfiguration configuration;
+public class ToggleRouter implements Router {
+    private final RouterConfiguration configuration;
 
     @Inject
-    public ToggleRouter(ToggleConfiguration configuration) {
+    public ToggleRouter(RouterConfiguration configuration) {
         this.configuration = configuration;
     }
 
     // Checks if feature is enabled
-    public Boolean isFeatureEnabled() {
+    public Boolean isEnabled() {
         return this.configuration.isEnabled();
     }
 
     // Checks if feature is disabled
-    public Boolean isFeatureDisabled() {
-        return !isFeatureEnabled();
+    public Boolean isDisabled() {
+        return !isEnabled();
+    }
+
+    public interface Factory {
+        Router create(Optional<String> serviceName, Feature feature);
+
+        public class ToggleRouterFactory implements Factory {
+            public Router create(Optional<String> serviceName, Feature feature) {
+               return new ToggleRouter(new FeatureConfiguration(serviceName, feature));
+            }
+        }
     }
 }

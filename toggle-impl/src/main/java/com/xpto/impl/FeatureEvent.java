@@ -13,6 +13,8 @@ public interface FeatureEvent extends Jsonable, AggregateEvent<FeatureEvent> {
 
     AggregateEventTag<FeatureEvent> TAG = AggregateEventTag.of(FeatureEvent.class);
 
+    Feature getFeature();
+
     @Value
     @JsonDeserialize
     final class FeatureChanged implements FeatureEvent {
@@ -22,10 +24,10 @@ public interface FeatureEvent extends Jsonable, AggregateEvent<FeatureEvent> {
         public FeatureChanged(Feature feature) {
             this.feature = feature;
         }
+    }
 
-        @Override
-        public AggregateEventTagger<FeatureEvent> aggregateTag() {
-            return TAG;
-        }
+    @Override
+    default AggregateEventTagger<FeatureEvent> aggregateTag() {
+        return TAG;
     }
 }

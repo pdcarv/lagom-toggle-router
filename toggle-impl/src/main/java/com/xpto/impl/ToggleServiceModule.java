@@ -11,5 +11,8 @@ public class ToggleServiceModule extends AbstractModule implements ServiceGuiceS
   @Override
   protected void configure() {
     bindService(ToggleService.class, ToggleServiceImpl.class);
+    bind(Router.class).to(ToggleRouter.class);
+    bind(ToggleRouter.Factory.class).to(ToggleRouter.Factory.ToggleRouterFactory.class);
+    bind(RouterConfiguration.class).to(FeatureConfiguration.class);
   }
 }
