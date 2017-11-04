@@ -6,6 +6,7 @@ import com.lightbend.lagom.javadsl.api.Descriptor;
 import com.lightbend.lagom.javadsl.api.Service;
 import com.lightbend.lagom.javadsl.api.ServiceCall;
 import com.lightbend.lagom.javadsl.api.broker.Topic;
+import com.xpto.api.HeaderFilters.AuthenticationHeaderFilter;
 
 import static com.lightbend.lagom.javadsl.api.Service.*;
 
@@ -43,7 +44,7 @@ public interface ToggleService extends Service {
                 pathCall("/api/v1/toggle/:id/version/:version/enabled", this::isEnabled)
         ).withTopics(
                 topic("feature-changed", this::featureChanged)
-        ).withAutoAcl(true);
+        ).withHeaderFilter(AuthenticationHeaderFilter.INSTANCE).withAutoAcl(true);
         // @formatter:on
     }
 }

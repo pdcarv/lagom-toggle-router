@@ -21,6 +21,7 @@ import play.libs.F;
 import javax.inject.Inject;
 import java.util.Optional;
 
+import static com.xpto.impl.auth.Authentication.authenticated;
 
 
 /**
@@ -45,7 +46,7 @@ public class ToggleServiceImpl implements ToggleService {
         return request ->
             entityRef(id, version).ask(new FeatureCommand.GetFeature()).thenApply(f -> (Optional<Feature>) f).thenApply(feature ->  {
                     if (feature.isPresent()) {
-                        return ResponseFactory.toFeatureMessage(feature.get());
+                        return ResponseMapper.toFeatureMessage(feature.get());
                     } else {
                         throw new NotFound("Feature not found");
                     }
@@ -64,7 +65,7 @@ public class ToggleServiceImpl implements ToggleService {
                     throw new NotFound("Feature not found");
                 }
 
-                return this.toggleRouterFactory.create(serviceName, feature.get()).isEnabled();
+                return this.toggleRouterFactory.buildInstance(serviceName, feature.get()).isEnabled();
             }).thenApply(isEnabled -> Pair.create(ResponseHeader.OK, isEnabled));
         });
     }
@@ -81,8 +82,9 @@ public class ToggleServiceImpl implements ToggleService {
 
     @Override
     public ServiceCall<FeatureMessage, Done> createToggle() {
-        return request ->
-            entityRef(request.getId(), request.getVersion()).ask(new FeatureCommand.CreateFeature(new Feature(request.getId(), request.getName(), request.getVersion(), request.getService(), request.getServiceOnly(), request.getEnabled())));
+        return authenticated( user -> request ->
+            entityRef(request.getId(), request.getVersion()).ask(new FeatureCommand.CreateFeature(new Feature(request.getId(), request.getName(), request.getVersion(), request.getService(), request.getServiceOnly(), request.getEnabled())))
+        );
     }
 
 

@@ -27,11 +27,11 @@ public class ToggleRouter implements Router {
     }
 
     public interface Factory {
-        Router create(Optional<String> serviceName, Feature feature);
+        Router buildInstance(Optional<String> serviceName, Feature feature);
 
         public class ToggleRouterFactory implements Factory {
-            public Router create(Optional<String> serviceName, Feature feature) {
-               return new ToggleRouter(new FeatureConfiguration(serviceName, feature));
+            public ToggleRouter buildInstance(Optional<String> serviceName, Feature feature) {
+                return new ToggleRouter(new FeatureConfiguration(serviceName, feature));
             }
         }
     }
