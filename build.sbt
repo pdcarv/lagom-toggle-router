@@ -25,7 +25,8 @@ lazy val `toggle-impl` = (project in file("toggle-impl"))
       lagomJavadslKafkaBroker,
       lagomJavadslTestKit,
       lombok,
-      cassandraExtras
+      cassandraExtras,
+      assertj
     )
   )
   .settings(lagomForkedTestSettings: _*)
@@ -33,6 +34,8 @@ lazy val `toggle-impl` = (project in file("toggle-impl"))
 
 val lombok = "org.projectlombok" % "lombok" % "1.16.10"
 val cassandraExtras = "com.datastax.cassandra" % "cassandra-driver-extras" % "3.0.0"
+val assertj = "org.assertj" % "assertj-core" % "3.8.0"
+
 
 def common = Seq(
   javacOptions in compile += "-parameters"

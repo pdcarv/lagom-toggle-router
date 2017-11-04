@@ -5,6 +5,7 @@ import akka.NotUsed;
 import com.lightbend.lagom.javadsl.api.Descriptor;
 import com.lightbend.lagom.javadsl.api.Service;
 import com.lightbend.lagom.javadsl.api.ServiceCall;
+import com.lightbend.lagom.javadsl.api.broker.Topic;
 
 import static com.lightbend.lagom.javadsl.api.Service.*;
 
@@ -31,7 +32,7 @@ public interface ToggleService extends Service {
     /**
      * This gets published to Kafka.
      */
-    //Topic<ToggleEvent> toggleConfigurationChanged();
+    Topic<FeatureMessage> featureChanged();
 
     @Override
     default Descriptor descriptor() {
@@ -40,6 +41,8 @@ public interface ToggleService extends Service {
                 pathCall("/api/v1/toggle/:id/version/:version",  this::toggle),
                 pathCall("/api/v1/toggle", this::createToggle),
                 pathCall("/api/v1/toggle/:id/version/:version/enabled", this::isEnabled)
+        ).withTopics(
+                topic("feature-changed", this::featureChanged)
         ).withAutoAcl(true);
         // @formatter:on
     }
