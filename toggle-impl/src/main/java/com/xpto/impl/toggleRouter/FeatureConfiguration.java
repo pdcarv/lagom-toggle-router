@@ -1,6 +1,7 @@
-package com.xpto.impl;
+package com.xpto.impl.toggleRouter;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.xpto.impl.Feature;
 import lombok.Builder;
 import lombok.Value;
 
@@ -11,7 +12,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Value
 @Builder
-final class FeatureConfiguration implements RouterConfiguration {
+public final class FeatureConfiguration implements RouterConfiguration {
     private final Optional<String> service;
     private final Feature data;
 

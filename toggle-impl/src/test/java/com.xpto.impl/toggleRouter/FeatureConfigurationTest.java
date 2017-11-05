@@ -1,6 +1,7 @@
-package com.xpto.impl;
+package com.xpto.impl.toggleRouter;
 
 
+import com.xpto.impl.Feature;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -9,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FeatureConfigurationTest {
 
-    private static  FeatureConfiguration featureConfiguration;
+    private static FeatureConfiguration featureConfiguration;
 
     @Test
     public void shouldBeEnabledWhenNoServiceIsSetAndFeatureIsEnabled() {

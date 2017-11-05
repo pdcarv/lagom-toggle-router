@@ -6,7 +6,7 @@ import com.lightbend.lagom.javadsl.api.Descriptor;
 import com.lightbend.lagom.javadsl.api.Service;
 import com.lightbend.lagom.javadsl.api.ServiceCall;
 import com.lightbend.lagom.javadsl.api.broker.Topic;
-import com.xpto.api.HeaderFilters.AuthenticationHeaderFilter;
+import com.xpto.api.headerFilters.AuthenticationHeaderFilter;
 
 import static com.lightbend.lagom.javadsl.api.Service.*;
 

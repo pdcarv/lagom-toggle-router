@@ -3,6 +3,10 @@ package com.xpto.impl;
 import com.google.inject.AbstractModule;
 import com.lightbend.lagom.javadsl.server.ServiceGuiceSupport;
 import com.xpto.api.ToggleService;
+import com.xpto.impl.toggleRouter.FeatureConfiguration;
+import com.xpto.impl.toggleRouter.Router;
+import com.xpto.impl.toggleRouter.RouterConfiguration;
+import com.xpto.impl.toggleRouter.ToggleRouter;
 
 /**
  * The module that binds the ToggleServiceModule so that it can be served.

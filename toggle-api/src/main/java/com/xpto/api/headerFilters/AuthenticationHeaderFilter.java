@@ -1,13 +1,9 @@
-package com.xpto.api.HeaderFilters;
+package com.xpto.api.headerFilters;
 
-import com.lightbend.lagom.javadsl.api.security.ServicePrincipal;
 import com.lightbend.lagom.javadsl.api.security.UserAgentHeaderFilter;
 import com.lightbend.lagom.javadsl.api.transport.HeaderFilter;
 import com.lightbend.lagom.javadsl.api.transport.RequestHeader;
 import com.lightbend.lagom.javadsl.api.transport.ResponseHeader;
-import javassist.expr.Instanceof;
-
-import java.util.Optional;
 
 
 public final class AuthenticationHeaderFilter implements HeaderFilter {

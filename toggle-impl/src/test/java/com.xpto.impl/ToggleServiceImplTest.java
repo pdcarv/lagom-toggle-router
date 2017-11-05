@@ -6,6 +6,8 @@ import com.lightbend.lagom.javadsl.api.transport.NotFound;
 import com.lightbend.lagom.javadsl.testkit.ServiceTest;
 import com.xpto.api.FeatureMessage;
 import com.xpto.api.ToggleService;
+import com.xpto.impl.toggleRouter.Router;
+import com.xpto.impl.toggleRouter.ToggleRouter;
 import lombok.Value;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

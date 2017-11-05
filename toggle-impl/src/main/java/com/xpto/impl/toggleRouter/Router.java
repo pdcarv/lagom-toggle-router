@@ -1,4 +1,4 @@
-package com.xpto.impl;
+package com.xpto.impl.toggleRouter;
 
 public interface Router {
     Boolean isEnabled();

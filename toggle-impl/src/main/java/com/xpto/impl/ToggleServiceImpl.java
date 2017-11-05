@@ -15,6 +15,7 @@ import com.lightbend.lagom.javadsl.server.HeaderServiceCall;
 import com.lightbend.lagom.javadsl.server.ServerServiceCall;
 import com.xpto.api.FeatureMessage;
 import com.xpto.api.ToggleService;
+import com.xpto.impl.toggleRouter.ToggleRouter;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import play.libs.F;

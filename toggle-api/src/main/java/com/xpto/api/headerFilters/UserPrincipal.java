@@ -1,4 +1,4 @@
-package com.xpto.api.HeaderFilters;
+package com.xpto.api.headerFilters;
 
 import javax.security.auth.Subject;
 import java.security.Principal;

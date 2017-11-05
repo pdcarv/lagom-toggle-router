@@ -1,7 +1,8 @@
-package com.xpto.impl;
+package com.xpto.impl.toggleRouter;
 
 
 import com.google.inject.Singleton;
+import com.xpto.impl.Feature;
 
 import javax.inject.Inject;
 import java.util.Optional;
