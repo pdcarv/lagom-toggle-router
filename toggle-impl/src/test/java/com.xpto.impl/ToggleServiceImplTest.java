@@ -4,6 +4,7 @@ import akka.Done;
 import com.lightbend.lagom.javadsl.api.transport.NotFound;
 import com.lightbend.lagom.javadsl.testkit.ServiceTest;
 import com.xpto.api.FeatureMessage;
+import com.xpto.api.HeaderFilters.UserPrincipal;
 import com.xpto.api.ToggleService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,11 +36,13 @@ public class ToggleServiceImplTest {
 
             );
 
+    private static FeatureMessage message;
 
     @BeforeClass
     public static void beforeAll() {
         testServer = ServiceTest.startServer(setup);
         toggleService = testServer.client(ToggleService.class);
+        message = new FeatureMessage("1", "redButton", "1", "abc", true, true);
     }
 
     @AfterClass
@@ -49,28 +52,25 @@ public class ToggleServiceImplTest {
 
     @Test
     public void shouldBeAbleToCreateAFeature() throws Exception {
-        FeatureMessage message = new FeatureMessage("1", "1", "redButton", "abc", true, true);
         assertThat(createFeature(message)).isInstanceOf(Done.class);
     }
 
     @Test
     public void shouldBeAbleToRetrieveAFeatureIfExists() throws Exception {
-        FeatureMessage message = new FeatureMessage("1", "1", "redButton", "abc", true, true);
-        toggleService.createToggle().invoke(message).toCompletableFuture().get(5, TimeUnit.SECONDS);
+        createFeature(message);
 
         assertThat(getFeature(message.getId(), message.getVersion())).isEqualTo(message);
     }
 
     @Test
     public void shouldThrowNotFoundWhenFeatureDoesNotExist() throws Exception {
-        FeatureMessage message = new FeatureMessage("1", "1", "redButton", "abc", true, true);
         assertThatExceptionOfType(ExecutionException.class).isThrownBy(() -> getFeature(message.getId(), message.getVersion())).withCauseInstanceOf(NotFound.class);
     }
 
     @Test
     public void shouldBeAbleToTellIfAToggleIsEnabled() throws Exception {
-        FeatureMessage message = new FeatureMessage("1", "1", "redButton", "abc", true, true);
-        toggleService.createToggle().invoke(message).toCompletableFuture().get(5, TimeUnit.SECONDS);
+        createFeature(message);
+
         assertThat(isFeatureEnabled(message)).isTrue();
     }
 
@@ -79,7 +79,7 @@ public class ToggleServiceImplTest {
     }
 
     private Done createFeature(FeatureMessage featureMessage) throws Exception {
-        return toggleService.createToggle().invoke(featureMessage).toCompletableFuture().get(5, TimeUnit.SECONDS);
+        return toggleService.createToggle().handleRequestHeader(f -> f.withHeader("User-Token", "Xm28dxc")).invoke(featureMessage).toCompletableFuture().get(5, TimeUnit.SECONDS);
     }
 
     private FeatureMessage getFeature(String id, String version) throws Exception {
@@ -104,7 +104,7 @@ public class ToggleServiceImplTest {
 
     public static class FactoryStub implements ToggleRouter.Factory {
         @Override
-        public Router create(Optional<String> serviceName, Feature feature) {
+        public Router buildInstance(Optional<String> serviceName, Feature feature) {
             return new ToggleRouterStub();
         }
     }
