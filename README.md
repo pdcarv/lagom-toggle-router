@@ -6,13 +6,16 @@
 ### 1.1 Start by installing sbt
 
 MAC OS X
+
 ```brew install sbt```
 
 Linux
+
 ```sudo apt-get install sbt```
 
 Windows
-```Dowload the [installer](https://github.com/sbt/sbt/releases/download/v1.0.2/sbt-1.0.2.msi)```
+
+Download the [installer](https://github.com/sbt/sbt/releases/download/v1.0.2/sbt-1.0.2.msi)
 
 ### 1.2 Checkout the project
 ```git clone git@github.com:pdcarv/lagom-toggle-router.git```
