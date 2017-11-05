@@ -5,6 +5,7 @@ import akka.NotUsed;
 import akka.japi.Pair;
 import com.lightbend.lagom.javadsl.api.ServiceCall;
 import com.lightbend.lagom.javadsl.api.broker.Topic;
+import com.lightbend.lagom.javadsl.api.transport.Forbidden;
 import com.lightbend.lagom.javadsl.api.transport.NotFound;
 import com.lightbend.lagom.javadsl.api.transport.ResponseHeader;
 import com.lightbend.lagom.javadsl.broker.TopicProducer;
@@ -44,14 +45,13 @@ public class ToggleServiceImpl implements ToggleService {
     @Override
     public ServiceCall<NotUsed, FeatureMessage> toggle(String id, String version) {
         return request ->
-            entityRef(id, version).ask(new FeatureCommand.GetFeature()).thenApply(f -> (Optional<Feature>) f).thenApply(feature ->  {
-                    if (feature.isPresent()) {
-                        return ResponseMapper.toFeatureMessage(feature.get());
-                    } else {
+                entityRef(id, version).ask(new FeatureCommand.GetFeature()).thenApply(f -> (Optional<Feature>) f).thenApply(feature ->  {
+                    if (!feature.isPresent()) {
                         throw new NotFound("Feature not found");
                     }
-            });
 
+                    return EntityMapper.toFeatureMessage(feature.get());
+                });
     }
 
     @Override
@@ -75,16 +75,20 @@ public class ToggleServiceImpl implements ToggleService {
         return TopicProducer.singleStreamWithOffset(offset -> {
             return persistentEntityRegistry.eventStream(FeatureEventTag.INSTANCE, offset).map(f -> {
                 Feature feature = f.first().getFeature();
-                return new Pair<>(ResponseMapper.toFeatureMessage(feature), f.second());
+                return new Pair<>(EntityMapper.toFeatureMessage(feature), f.second());
             });
         });
     }
 
     @Override
     public ServiceCall<FeatureMessage, Done> createToggle() {
-        return authenticated( user -> request ->
-            entityRef(request.getId(), request.getVersion()).ask(new FeatureCommand.CreateFeature(new Feature(request.getId(), request.getName(), request.getVersion(), request.getService(), request.getServiceOnly(), request.getEnabled())))
-        );
+        return authenticated( user -> request -> {
+            if (!user.getIsAdmin()) {
+                throw new Forbidden("You must have admin privileges");
+            }
+
+            return entityRef(request.getId(), request.getVersion()).ask(new FeatureCommand.CreateFeature(EntityMapper.toFeature(request)));
+        });
     }
 
 

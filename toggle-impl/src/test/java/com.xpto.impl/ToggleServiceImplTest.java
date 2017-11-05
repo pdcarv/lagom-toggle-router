@@ -1,10 +1,12 @@
 package com.xpto.impl;
 
 import akka.Done;
+import com.lightbend.lagom.javadsl.api.transport.Forbidden;
 import com.lightbend.lagom.javadsl.api.transport.NotFound;
 import com.lightbend.lagom.javadsl.testkit.ServiceTest;
 import com.xpto.api.FeatureMessage;
 import com.xpto.api.ToggleService;
+import lombok.Value;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,25 +52,31 @@ public class ToggleServiceImplTest {
     }
 
     @Test
-    public void shouldBeAbleToCreateAFeature() throws Exception {
-        assertThat(createFeature(message)).isInstanceOf(Done.class);
+    public void shouldBeAbleToCreateAFeatureWhenUserIsAdmin() throws Exception {
+        assertThat(createFeature(message, new Header("User-Token", "Xm28dxc"))).isInstanceOf(Done.class);
+    }
+
+    @Test
+    public void shouldNotBeAbleToCreateAFeatureIfIfUserIsNotAnAdmin() throws Exception {
+        assertThatExceptionOfType(ExecutionException.class).isThrownBy(() ->
+                createFeature(message, new Header("User-Token", "da39a3e"))).withMessage(String.valueOf(new Forbidden("You must have admin privileges")));
     }
 
     @Test
     public void shouldBeAbleToRetrieveAFeatureIfExists() throws Exception {
-        createFeature(message);
+        createFeature(message, new Header("User-Token", "Xm28dxc"));
 
         assertThat(getFeature(message.getId(), message.getVersion())).isEqualTo(message);
     }
 
     @Test
     public void shouldThrowNotFoundWhenFeatureDoesNotExist() throws Exception {
-        assertThatExceptionOfType(ExecutionException.class).isThrownBy(() -> getFeature(message.getId(), message.getVersion())).withCauseInstanceOf(NotFound.class);
+        assertThatExceptionOfType(ExecutionException.class).isThrownBy(() -> getFeature("2", "3")).withCauseInstanceOf(NotFound.class);
     }
 
     @Test
     public void shouldBeAbleToTellIfAToggleIsEnabled() throws Exception {
-        createFeature(message);
+        createFeature(message, new Header("User-Token", "Xm28dxc"));
 
         assertThat(isFeatureEnabled(message)).isTrue();
     }
@@ -77,12 +85,18 @@ public class ToggleServiceImplTest {
         return toggleService.isEnabled(featureMessage.getId(), featureMessage.getVersion()).invoke().toCompletableFuture().get(5, TimeUnit.SECONDS);
     }
 
-    private Done createFeature(FeatureMessage featureMessage) throws Exception {
-        return toggleService.createToggle().handleRequestHeader(f -> f.withHeader("User-Token", "Xm28dxc")).invoke(featureMessage).toCompletableFuture().get(5, TimeUnit.SECONDS);
+    private Done createFeature(FeatureMessage featureMessage, Header header) throws Exception {
+        return toggleService.createToggle().handleRequestHeader(f -> f.withHeader(header.getName(), header.getValue())).invoke(featureMessage).toCompletableFuture().get(5, TimeUnit.SECONDS);
     }
 
     private FeatureMessage getFeature(String id, String version) throws Exception {
         return toggleService.toggle(id, version).invoke().toCompletableFuture().get(5, TimeUnit.SECONDS);
+    }
+
+    @Value
+    public static class Header {
+        private final String name;
+        private final String value;
     }
 
     public static class ToggleRouterStub implements Router {

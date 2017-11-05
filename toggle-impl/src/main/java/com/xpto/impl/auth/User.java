@@ -13,9 +13,14 @@ public class User {
     private final Boolean isAdmin;
 }
 
+/* We are just mocking a user database, with a dummy token for concept purposes.
+ * You have many options here, from google's OAUTH implementation to amazon's cognito
+ * or to your own JWT or other access token based authentication.
+ */
 class Users {
     private static final List<User> users = Arrays.asList(
-            new User("Trump", "Xm28dxc", true )
+            new User("Trump", "Xm28dxc", true ),
+            new User("Kim Jon Un", "da39a3e", false)
     );
 
     public static Optional<User> getUser(String token) {
