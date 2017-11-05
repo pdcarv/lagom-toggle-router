@@ -75,7 +75,7 @@ public class ToggleServiceImpl implements ToggleService {
         return TopicProducer.singleStreamWithOffset(offset -> {
             return persistentEntityRegistry.eventStream(FeatureEventTag.INSTANCE, offset).map(f -> {
                 Feature feature = f.first().getFeature();
-                return new Pair<>(new FeatureMessage(feature.getId(), feature.getName(), feature.getVersion(), feature.getService(), feature.getServiceOnly(), feature.getEnabled()), f.second());
+                return new Pair<>(ResponseMapper.toFeatureMessage(feature), f.second());
             });
         });
     }
