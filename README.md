@@ -50,7 +50,7 @@ This will also trigger a notification to other services.
 There are several strategies for asynchronous communication in lagom, [akka's distributed pub/sub](https://doc.akka.io/docs/akka/current/scala/distributed-pub-sub.html) and the [message broker api](https://www.lagomframework.com/documentation/1.3.x/java/MessageBrokerApi.html)
 stick out. The message broker api reads and writes to and from an event stream, in lagom terminology this is known as subscribing or publishing to a Topic.
 That capability is provided by a kafka instance that comes bundle in development environment, no configuration needed.
-Lagom uses kafka providing two strategies for subscribers, atLeastOnce and atMostOnceSource. We're using atLeastOnce in this example which guarantees that a configuration change notification is consumed, at least once or possibly, more that once.
+Lagom uses kafka providing two strategies for subscribers, atLeastOnce and atMostOnceSource. We're using atLeastOnce in this example which guarantees that a configuration change notification is consumed, at least once or possiblyt  more than once.
 
 
 ### Check if Toggle is enabled
