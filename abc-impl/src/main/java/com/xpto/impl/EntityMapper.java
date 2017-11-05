@@ -12,4 +12,8 @@ public class EntityMapper {
         return new ToggleMessage(msg.getId(), msg.getVersion(), msg.getName(), msg.getEnabled());
     }
 
+    public static ToggleMessage toToggleMessage(FeatureMessage msg){
+        return new ToggleMessage(msg.getId(), msg.getVersion(), msg.getName(), msg.getEnabled());
+    }
+
 }

@@ -4,7 +4,6 @@ import akka.Done;
 import com.lightbend.lagom.javadsl.api.transport.NotFound;
 import com.lightbend.lagom.javadsl.testkit.ServiceTest;
 import com.xpto.api.FeatureMessage;
-import com.xpto.api.HeaderFilters.UserPrincipal;
 import com.xpto.api.ToggleService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

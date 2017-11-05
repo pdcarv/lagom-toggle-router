@@ -37,6 +37,7 @@ lazy val `abc-api` = (project in file("abc-api"))
   .settings(
     libraryDependencies ++= Seq(
       lagomJavadslApi,
+      lagomJavadslJackson,
       lombok
     )
   )

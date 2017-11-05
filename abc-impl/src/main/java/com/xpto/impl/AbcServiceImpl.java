@@ -2,7 +2,6 @@ package com.xpto.impl;
 
 import akka.Done;
 import akka.NotUsed;
-import akka.japi.Pair;
 import akka.stream.javadsl.Flow;
 import akka.stream.javadsl.Source;
 import com.lightbend.lagom.javadsl.api.ServiceCall;
