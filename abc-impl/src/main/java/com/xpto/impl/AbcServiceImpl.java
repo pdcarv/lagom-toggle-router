@@ -12,6 +12,8 @@ import com.xpto.api.AbcService;
 import com.xpto.api.FeatureMessage;
 import com.xpto.api.ToggleMessage;
 import com.xpto.api.ToggleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -24,6 +26,7 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 public class AbcServiceImpl implements AbcService {
     private PersistentEntityRegistry registry;
     private ToggleService toggleService;
+    private final Logger log = LoggerFactory.getLogger(AbcServiceImpl.class);
 
     @Inject
     public AbcServiceImpl(ToggleService toggleService, PersistentEntityRegistry registry) {
@@ -35,7 +38,10 @@ public class AbcServiceImpl implements AbcService {
         this.toggleService.featureChanged().subscribe().atLeastOnce(Flow.fromFunction((FeatureMessage message) -> {
             // If it is destined to this service, consume
             if (message.getService().equals(Constants.SERVICE_NAME)) {
+                log.warn(String.format("AbcService: received message %s, persisting configuration.", message));
+
                 Toggle toggle = EntityMapper.toToggle(message);
+
                 entityRef(toggle.getId()).ask(new AbcCommand.UpdateConfig(toggle));
             }
 
