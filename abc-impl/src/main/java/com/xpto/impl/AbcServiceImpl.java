@@ -37,7 +37,7 @@ public class AbcServiceImpl implements AbcService {
 
         this.toggleService.featureChanged().subscribe().atLeastOnce(Flow.fromFunction((FeatureMessage message) -> {
             // If it is destined to this service, consume
-            if (message.getService().equals(Constants.SERVICE_NAME)) {
+            if (message.getService().toLowerCase().equals(Constants.SERVICE_NAME)) {
                 log.warn(String.format("AbcService: received message %s, persisting configuration.", message));
 
                 Toggle toggle = EntityMapper.toToggle(message);

@@ -29,6 +29,7 @@ import static com.lightbend.lagom.javadsl.testkit.ServiceTest.defaultSetup;
 import static com.lightbend.lagom.javadsl.testkit.ServiceTest.eventually;
 import static com.lightbend.lagom.javadsl.testkit.ServiceTest.withServer;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static play.inject.Bindings.bind;
 
 public class AbcServiceImplTest {
@@ -69,9 +70,24 @@ public class AbcServiceImplTest {
         eventually(new FiniteDuration(5, TimeUnit.SECONDS), () -> {
             Source<ToggleMessage, NotUsed> toggleStream = testServer.client(AbcService.class).toggleStream().invoke().toCompletableFuture().get(3, TimeUnit.SECONDS);
             TestSubscriber.Probe<ToggleMessage> probe = toggleStream.runWith(TestSink.probe(testServer.system()), testServer.materializer());
-            probe.request(10);
+            probe.request(5);
 
             assertThat(probe.requestNext()).isEqualTo(EntityMapper.toToggleMessage(message));
+        });
+    }
+
+    @Test
+    public void shouldDiscardUpStreamIfNotMeantForThisService() {
+        FeatureMessage message = new FeatureMessage("1", "redButton", "1", "", true, true);
+
+        toggleProducer.send(message);
+
+        eventually(new FiniteDuration(1, TimeUnit.SECONDS), () -> {
+            Source<ToggleMessage, NotUsed> toggleStream = testServer.client(AbcService.class).toggleStream().invoke().toCompletableFuture().get(1, TimeUnit.SECONDS);
+            TestSubscriber.Probe<ToggleMessage> probe = toggleStream.runWith(TestSink.probe(testServer.system()), testServer.materializer());
+            probe.request(1);
+
+            assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> probe.requestNext());
         });
     }
 
